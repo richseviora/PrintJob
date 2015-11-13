@@ -1,10 +1,10 @@
-﻿At InnerWorkings a "job" is a group of print items.For example,
+ A "job" is a group of print items.For example,
 a job can be a run of business cards, envelopes, and letterhead together.
 
 Some items qualify as being sales tax free, whereas, by default, others
 are not.Sales tax is 7%.
 
-InnerWorkings also applies a margin, which is the percentage above printing
+Also applies a margin, which is the percentage above printing
 cost that is charged to the customer.  For example, an item that costs $100 
 to print that has a margin of 11% will cost:
 item: $100 -> $7 sales tax = $107
