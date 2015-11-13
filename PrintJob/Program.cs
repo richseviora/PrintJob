@@ -9,9 +9,16 @@ namespace PrintJob
     {
         static void Main(string[] args)
         {
-
-            Console.WriteLine("Please type data file name");
-            var datafile = Console.ReadLine();
+            var datafile = String.Empty;
+            while (datafile == String.Empty)
+            {
+                Console.WriteLine("Please type data file name");
+                datafile = Console.ReadLine();
+                if (!File.Exists(datafile))
+                {
+                    datafile = String.Empty;
+                }
+            }
 
             const decimal TaxRate = 0.07m;
             const decimal MarginRate = 0.11m;
