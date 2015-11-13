@@ -1,6 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 
 namespace PrintJob
 {
@@ -8,32 +9,38 @@ namespace PrintJob
     {
         static void Main(string[] args)
         {
+
+            Console.WriteLine("Please type data file name");
+            var datafile = Console.ReadLine();
+
             const decimal TaxRate = 0.07m;
             const decimal MarginRate = 0.11m;
             const decimal ExtraMarginRate = 0.16m;
 
             var job = new Job();
 
-            using (StreamReader sr = File.OpenText("job.txt"))
-            {
-                string s = "";
-                while ((s = sr.ReadLine()) != null)
-                {
-                    if(s == "extra-margin")
-                    {
-                        job.ExtraMargin = true;
-                    }
-                    else
-                    {
-                        job.ExtraMargin = true;
-                    }
-                    Console.WriteLine(s);
-                }
-            }
+            var lines = File.ReadAllLines(datafile);
+            var linescoll = new Collection<string>(lines);
+            var skipindex = 0;
             
-            job.ExtraMargin = true;
+            if (lines[0] == "extra-margin")
+            {
+                job.ExtraMargin = true;
+                skipindex = 1;
+            }
+            else
+            {
+                job.ExtraMargin = false;
+            }            
 
-            job.Items = GetItemsList();
+            foreach(var line in linescoll.Skip(skipindex))
+            {
+                var item = line.Split(' ');
+                var jobitem = new JobItem { Name = item[0], Price = Convert.ToDecimal(item[1]), Exempt = item.Length>2&& item[2]== "exempt" };
+                job.AddItem(jobitem);
+            }           
+            
+            //job.Items = GetItemsList();
 
             foreach(var item in job.Items)
             {
@@ -58,16 +65,16 @@ namespace PrintJob
             job.TotalPrice += job.Margin;
             job.PrintReceipt(job);
 
-            Console.ReadLine();
+            //Console.ReadLine();
         }
 
-        private static IList<JobItem> GetItemsList()
-        {
-            return new List<JobItem>
-            {
-                new JobItem {Name = "envelopes", Price = 520.00m, Exempt = false},
-                new JobItem {Name = "letterhead ", Price = 1983.37m, Exempt = true}
-            };
-        }
+        //private static IList<JobItem> GetItemsList()
+        //{
+        //    return new List<JobItem>
+        //    {
+        //        new JobItem {Name = "envelopes", Price = 520.00m, Exempt = false},
+        //        new JobItem {Name = "letterhead ", Price = 1983.37m, Exempt = true}
+        //    };
+        //}
     }
 }
