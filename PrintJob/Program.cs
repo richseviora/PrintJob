@@ -70,7 +70,7 @@ namespace PrintJob
                 job.TotalPrice += item.Price + item.Tax;                
             }
             job.TotalPrice += job.Margin;
-            job.PrintReceipt(job);
+            job.PrintReceipt();
 
             //Console.ReadLine();
         }

@@ -22,7 +22,7 @@ namespace PrintJob
             this.Items.Add(item);
         }
        
-        public void PrintReceipt(Job job)
+        public void PrintReceipt()
         {
 
             FileStream filestream = new FileStream("Receipt.txt", FileMode.Create);
@@ -32,11 +32,11 @@ namespace PrintJob
             Console.SetError(streamwriter);
 
             Console.WriteLine("Job Receipt");
-            foreach(var item in job.Items)
+            foreach(var item in Items)
             {                   
                 Console.WriteLine("{0}:  ${1} ", item.Name, Math.Round((item.Price + item.Tax),2));
             }
-            Console.WriteLine("Total: ${0} ", Math.Round(job.TotalPrice,2));
+            Console.WriteLine("Total: ${0} ", Math.Round(TotalPrice,2));
         }
     }
 }
