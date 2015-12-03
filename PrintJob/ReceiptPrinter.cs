@@ -1,53 +1,60 @@
 ﻿using System;
+using System.Globalization;
 using System.IO;
 
 namespace PrintJob
 {
     public interface IReceiptGenerator
     {
-        void OutputReceipt(Job job);
+        void OutputReceipt(Job job, string fileName);
     }
 
     public class ReceiptGenerator : IReceiptGenerator
     {
-        FileStream Stream { get; set; }
-        StreamWriter Writer { get; set; }
+        public string OutputName { get; set; }
 
         public ReceiptGenerator(string outputName)
         {
-            Stream = new FileStream(outputName, FileMode.Create);
-            Writer = new StreamWriter(Stream);
-            Writer.AutoFlush = true;
+            OutputName = outputName;
+
         }
 
 
         #region Implementation of IReceiptGenerator
 
-        public void OutputReceipt(Job job)
+        public void OutputReceipt(Job job, string fileName)
         {
-            // Renders Receipt
-            OutputLine("Job Receipt");
-            foreach (var jobItem in job.Items)
+            using (FileStream sb = new FileStream(fileName, FileMode.Create))
             {
-                var priceOutput = RenderValue(jobItem.TotalPrice);
-                OutputLine($"{jobItem.Name}:  ${priceOutput} ");
+                using (StreamWriter sw = new StreamWriter(sb))
+                {
+                    sw.AutoFlush = true;
+                    OutputLine("Job Receipt", sw);
+                    foreach (var jobItem in job.Items)
+                    {
+                        var priceOutput = RenderValue(jobItem.TotalPrice);
+                        OutputLine($"{jobItem.Name}:  ${priceOutput} ", sw);
+                    }
+                    OutputLine($"Total: ${RenderValue(job.TotalPrice)}", sw);
+                }
             }
-            OutputLine($"Total: ${RenderValue(job.TotalPrice)}");
         }
 
         #endregion
+
         /// <summary>
-        /// Generates a line in the stream writer.
+        /// Arguably not necessary but makes it quicker to swtich between WriteLine and hypothetical other option.
         /// </summary>
-        /// <param name="line">Line to add.</param>
-        private void OutputLine(string line)
+        /// <param name="line">Line to write.</param>
+        /// <param name="writer">Writer to write to.</param>
+        private void OutputLine(string line, StreamWriter writer)
         {
-            Console.WriteLine(line);
+            writer.WriteLine(line);
         }
 
         private string RenderValue(decimal value)
         {
-            return Math.Round(value, 2).ToString();
+            return Math.Round(value, 2).ToString(CultureInfo.CurrentCulture);
         }
     }
 
