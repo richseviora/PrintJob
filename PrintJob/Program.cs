@@ -30,8 +30,8 @@ namespace PrintJob
             IJobLoader jobLoader = new JobLoader(marginRate: MarginRate, extraMarginRate: ExtraMarginRate, taxRate: TaxRate);
             Job newJob = jobLoader.Parse(fileLoader.Lines);
             
-            IReceiptGenerator receiptGenerator = new ReceiptGenerator("receipt.txt");
-            receiptGenerator.OutputReceipt(newJob);
+            IReceiptGenerator receiptGenerator = new ReceiptGenerator();
+            receiptGenerator.OutputReceipt(newJob, "receipt.txt");
         }
     }
 }
